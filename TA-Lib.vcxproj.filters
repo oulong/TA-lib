@@ -13,15 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\base">
+      <UniqueIdentifier>{e627f13b-bcb2-455f-80c0-f0791b3d31ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\base">
+      <UniqueIdentifier>{10f050ec-d794-4c86-aee3-750abc87461d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\indicator">
+      <UniqueIdentifier>{e7446a62-4453-4f64-b7d2-b3ab1f1367f4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TA_Lib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TA_LINEARREG.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TA_MA.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TA_Out.h">
@@ -30,19 +33,28 @@
     <ClInclude Include="TA_Param.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TA_Exception.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TA_Abstract_Param.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="base\TA_Exception.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
+    <ClInclude Include="indicator\TA_DX.h">
+      <Filter>Header Files\indicator</Filter>
+    </ClInclude>
+    <ClInclude Include="indicator\TA_LINEARREG.h">
+      <Filter>Header Files\indicator</Filter>
+    </ClInclude>
+    <ClInclude Include="indicator\TA_MA.h">
+      <Filter>Header Files\indicator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TA_Lib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TA_Exception.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="base\TA_Exception.cpp">
+      <Filter>Source Files\base</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

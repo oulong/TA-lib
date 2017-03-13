@@ -23,7 +23,7 @@ namespace TA
 	{
 	public:
 		LINEARREG_Param(const std::vector<T>& serial, int peroid = 14)
-			: PeroidParam(serial)
+			: PeroidParam(0, serial.size() - 1, peroid, serial)
 		{
 
 		}
@@ -32,7 +32,7 @@ namespace TA
 			, int start
 			, int end
 			, int peroid = 14)
-			: PeroidParam<T>(serial, start, end, peroid)
+			: PeroidParam<T>(start, end, peroid, serial)
 		{
 
 		}

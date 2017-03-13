@@ -126,5 +126,42 @@ namespace TA
 		return std::move(Out<double>(out_beg, out_nb_element, out_serial));
 	}
 
+	////////////////////////////////////////////////////////////////////////////////////////////
+	Out<> Lib::DX(const DX_Param<float>& param)
+	{
+		std::shared_ptr<double> out_serial = make_shared_array<double>(param.serial().size());
+		TA_Integer	out_beg = 0;
+		TA_Integer	out_nb_element = 0;
+
+		TA_RetCode ret_code = TA_S_DX(param.start(), param.end(),
+			param.buffer(0),
+			param.buffer(1),
+			param.buffer(2),
+			param.peroid(),
+			&out_beg, &out_nb_element, out_serial.get());
+
+		_handle_error(ret_code);
+
+		return std::move(Out<double>(out_beg, out_nb_element, out_serial));
+	}
+
+	Out<> Lib::DX(const DX_Param<double>& param)
+	{
+		std::shared_ptr<double> out_serial = make_shared_array<double>(param.serial().size());
+		TA_Integer	out_beg = 0;
+		TA_Integer	out_nb_element = 0;
+
+		TA_RetCode ret_code = TA_DX(param.start(), param.end(),
+			param.buffer(0),
+			param.buffer(1),
+			param.buffer(2),
+			param.peroid(),
+			&out_beg, &out_nb_element, out_serial.get());
+
+		_handle_error(ret_code);
+
+		return std::move(Out<double>(out_beg, out_nb_element, out_serial));
+	}
+
 }
 
