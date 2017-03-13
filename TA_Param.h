@@ -3,9 +3,6 @@
 
 #include <vector>
 #include <stdarg.h>
-#include <typeinfo>
-
-
 
 namespace TA
 {

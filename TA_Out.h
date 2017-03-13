@@ -1,6 +1,8 @@
 #ifndef __TA_OUT_H__
 #define __TA_OUT_H__
 
+#include <stdarg.h>
+
 namespace TA
 {
 	template<typename T = double>
@@ -38,6 +40,48 @@ namespace TA
 	private:
 		TA_Integer			out_beg_;
 		std::vector<T>		out_serial_;
+	};
+
+	template<typename T = double, int N = 1>
+	class Outs
+	{
+	public:
+		Outs(int out_beg, int out_nb_element, const std::shared_ptr<T>* const, ...)
+			: out_beg_(out_beg)
+		{
+			va_list arg_ptr;
+			va_start(arg_ptr, out_nb_element);
+			for (int i = 0; i < N; i++)
+			{				
+				const std::shared_ptr<T>* const _arg = va_arg(arg_ptr, const std::shared_ptr<T>* const);
+				//out_serial_[i] = *_arg;
+
+				for (int k = 0; k++ < out_nb_element;)
+				{
+					out_serial_[i].push_back((*_arg).get()[i]);
+				}
+			}
+		
+			va_end(arg_ptr);
+		}
+
+		int size() const
+		{
+			const out_serial_[0].size();
+		}
+
+		int begin() const
+		{
+			return out_beg_;
+		}
+
+		const std::vector<T>&  serial(int idx = 0) const
+		{
+			return out_serial_[idx];
+		}
+	private:
+		TA_Integer			out_beg_;
+		std::vector<T>		out_serial_[N];
 	};
 }
 
