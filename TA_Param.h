@@ -120,7 +120,7 @@ namespace TA
 		}
 
 		PeroidParam(int start, int end, const std::vector<T>& serial, int args_peroid, int ,...)
-			: BaseParam<T>(start, end, serial)
+			: BaseParam<T>(serial, start, end)
 		{
 			va_list arg_ptr;
 			va_start(arg_ptr, args_peroid);

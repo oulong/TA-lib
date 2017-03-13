@@ -12,6 +12,7 @@
 #include "indicator/TA_MA.h"
 #include "indicator/TA_LINEARREG.h"
 #include "indicator/TA_DX.h"
+#include "indicator/TA_MACD.h"
 
 namespace TA
 {
@@ -32,6 +33,10 @@ namespace TA
 		/*TA_DX - Directional Movement Index*/
 		Out<> DX(const DX_Param<float>& param);
 		Out<> DX(const DX_Param<double>& param);
+
+		/*TA_MACD - Moving Average Convergence / Divergence*/
+		Outs<double, 3> MACD(const MACD_Param<float>& param);
+		Outs<double, 3> MACD(const MACD_Param<double>& param);
 	private:
 		void _handle_error(TA_RetCode code) const;
 	};

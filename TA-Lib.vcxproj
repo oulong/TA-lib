@@ -85,6 +85,7 @@
     <ClInclude Include="indicator\TA_DX.h" />
     <ClInclude Include="indicator\TA_LINEARREG.h" />
     <ClInclude Include="indicator\TA_MA.h" />
+    <ClInclude Include="indicator\TA_MACD.h" />
     <ClInclude Include="TA_Abstract_Param.h" />
     <ClInclude Include="TA_Lib.h" />
     <ClInclude Include="TA_Out.h" />

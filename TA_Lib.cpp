@@ -163,5 +163,47 @@ namespace TA
 		return std::move(Out<double>(out_beg, out_nb_element, out_serial));
 	}
 
+	////////////////////////////////////////////////////////////////////////////////////////////
+	Outs<double, 3> Lib::MACD(const MACD_Param<float>& param)
+	{
+		std::shared_ptr<double> out_macd = make_shared_array<double>(param.serial().size());
+		std::shared_ptr<double> out_macd_signal = make_shared_array<double>(param.serial().size());
+		std::shared_ptr<double> out_macd_hist = make_shared_array<double>(param.serial().size());
+
+		TA_Integer	out_beg = 0;
+		TA_Integer	out_nb_element = 0;
+
+		TA_RetCode ret_code = TA_S_MACD(param.start(), param.end(),
+			param.buffer(),
+			param.peroid(0),
+			param.peroid(1),
+			param.peroid(2),
+			&out_beg, &out_nb_element, out_macd.get(), out_macd_signal.get(), out_macd_hist.get());
+
+		_handle_error(ret_code);
+
+		return std::move(Outs<double, 3>(out_beg, out_nb_element, &out_macd, &out_macd_signal, &out_macd_hist));
+	}
+
+	Outs<double, 3> Lib::MACD(const MACD_Param<double>& param)
+	{
+		std::shared_ptr<double> out_macd = make_shared_array<double>(param.serial().size());
+		std::shared_ptr<double> out_macd_signal = make_shared_array<double>(param.serial().size());
+		std::shared_ptr<double> out_macd_hist = make_shared_array<double>(param.serial().size());
+
+		TA_Integer	out_beg = 0;
+		TA_Integer	out_nb_element = 0;
+
+		TA_RetCode ret_code = TA_MACD(param.start(), param.end(),
+			param.buffer(),
+			param.peroid(0),
+			param.peroid(1),
+			param.peroid(2),
+			&out_beg, &out_nb_element, out_macd.get(), out_macd_signal.get(), out_macd_hist.get());
+
+		_handle_error(ret_code);
+
+		return std::move(Outs<double, 3>(out_beg, out_nb_element, &out_macd, &out_macd_signal, &out_macd_hist));
+	}
 }
 

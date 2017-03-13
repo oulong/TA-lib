@@ -48,6 +48,9 @@
     <ClInclude Include="indicator\TA_MA.h">
       <Filter>Header Files\indicator</Filter>
     </ClInclude>
+    <ClInclude Include="indicator\TA_MACD.h">
+      <Filter>Header Files\indicator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TA_Lib.cpp">

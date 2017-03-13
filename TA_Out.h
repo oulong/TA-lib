@@ -32,7 +32,7 @@ namespace TA
 		{
 			if (idx < out_beg_)
 			{
-				throw std::runtime_error("params out");
+				throw RangeException("[] idx out");
 			}
 
 			return out_serial_[idx - out_beg_];
@@ -53,8 +53,7 @@ namespace TA
 			va_start(arg_ptr, out_nb_element);
 			for (int i = 0; i < N; i++)
 			{				
-				const std::shared_ptr<T>* const _arg = va_arg(arg_ptr, const std::shared_ptr<T>* const);
-				//out_serial_[i] = *_arg;
+				const std::shared_ptr<T>* const _arg = va_arg(arg_ptr, const std::shared_ptr<T>* const);		
 
 				for (int k = 0; k++ < out_nb_element;)
 				{
@@ -67,7 +66,7 @@ namespace TA
 
 		int size() const
 		{
-			const out_serial_[0].size();
+			return out_serial_[0].size();
 		}
 
 		int begin() const
@@ -77,6 +76,11 @@ namespace TA
 
 		const std::vector<T>&  serial(int idx = 0) const
 		{
+			if (idx < 0 || idx >= N)
+			{
+				throw RangeException("serial idx out");
+			}
+
 			return out_serial_[idx];
 		}
 	private:
