@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <stdarg.h>
+#include <typeinfo>
 
 
 
@@ -18,7 +19,7 @@ namespace TA
 		{
 		}
 
-		BaseParam(int start, int end, const std::vector<T>& serial)
+		BaseParam(const std::vector<T>& serial, int start, int end)
 			: start_idx_(start)
 			, end_idx_(end)
 		{
@@ -30,16 +31,23 @@ namespace TA
 			in_v_data_serial_.push_back(serial);
 		}
 
-		BaseParam(int start, int end, int args, ...)
+		/*
+		 * params end by nullptr;
+		 */
+		BaseParam(int start, int end, const std::vector<T>* const, ...)
 			: start_idx_(start)
 			, end_idx_(end)
 		{
 			va_list arg_ptr;			
-			va_start(arg_ptr, args);
+			va_start(arg_ptr, end);
 
-			for (int i = 0; i < args; i++)
+			for (int i = 0; ; i++)
 			{
-				const std::vector<T>* const  _arg = va_arg(arg_ptr, const std::vector<T>* const);			
+				const std::vector<T>* const  _arg = va_arg(arg_ptr, const std::vector<T>* const);
+				if (_arg == nullptr)
+				{
+					break;
+				}
 				in_v_data_serial_.push_back(*_arg);
 			}
 			va_end(arg_ptr);
@@ -83,43 +91,88 @@ namespace TA
 	class PeroidParam : public BaseParam<T>
 	{
 	public:
-		PeroidParam(int start, int end, int peroid, const std::vector<T>& serial)
-			: BaseParam<T>(start, end, serial)
-			, peroid_(peroid)
+		PeroidParam(int start, int end, const std::vector<T>& serial, int peroid)
+			: BaseParam<T>(serial, start, end)
 		{
-			if (peroid < 1 || peroid >= 100000)
-			{				
-				throw ParamsException("peroid out [1-100000]");
-			}
+			v_peroid_.push_back(peroid);
 		}
 
-		PeroidParam(int start, int end, int peroid, int args, ...)
+		/*
+		 * params end by nullptr;
+		 */
+		PeroidParam(int start, int end, int peroid, const std::vector<T>* const, ...)
 			: BaseParam<T>(start, end)
-			, peroid_(peroid)
 		{
-			va_list arg_ptr;
-			va_start(arg_ptr, args);
+			v_peroid_.push_back(peroid);
 
-			for (int i = 0; i < args; i++)
+			va_list arg_ptr;
+			va_start(arg_ptr, peroid);
+			
+			for (int i = 0;;i++)
 			{
 				const std::vector<T>* const  _arg = va_arg(arg_ptr, const std::vector<T>* const);
-
+				if (_arg == nullptr)
+				{
+					break;
+				}
 
 				in_v_data_serial_.push_back(*_arg);
 			}
+
 			va_end(arg_ptr);
 		}
 
-		~PeroidParam() 
+		PeroidParam(int start, int end, const std::vector<T>& serial, int args_peroid, int ,...)
+			: BaseParam<T>(start, end, serial)
+		{
+			va_list arg_ptr;
+			va_start(arg_ptr, args_peroid);
+			
+			for (int i = 0; i < args_peroid; i++)
+			{
+				int  _arg = va_arg(arg_ptr, int);
+				v_peroid_.push_back(_arg);
+			}
+
+			va_end(arg_ptr);
+		}
+
+		PeroidParam(int start, int end, int args_serial, int args_peroid, ...)
+			: BaseParam<T>(start, end)
+		{			
+			va_list arg_ptr;
+			va_start(arg_ptr, args_peroid);
+			
+			for (int i = 0; i < args_serial; i++)
+			{
+				const std::vector<T>* const  _arg = va_arg(arg_ptr, const std::vector<T>* const);
+				in_v_data_serial_.push_back(*_arg);
+			}
+
+			for (int i = 0; i < args_peroid; i++)
+			{
+				int _arg = va_arg(arg_ptr, int);
+				v_peroid_.push_back(_arg);
+			}
+
+			va_end(arg_ptr);
+		}
+
+		virtual ~PeroidParam() 
 		{
 		}
 
-		int peroid() const
+		int peroid(int idx = 0) const
 		{
-			return peroid_;
+			return v_peroid_[idx];
+		}
+
+		int peroid_param_size() const
+		{
+			return v_peroid_.size();
 		}
 	protected:
-		int	 peroid_;
+		std::vector<int> v_peroid_;
 	};
 }
 

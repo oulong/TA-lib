@@ -27,7 +27,7 @@ namespace TA
 			, int end
 			, int peroid = 30
 			, TA_MAType type = TA_MAType::TA_MAType_SMA)
-			: PeroidParam<T>(start, end, serial)
+			: PeroidParam<T>(start, end, serial, peroid)
 			, type_(type)
 		{
 			if (peroid < 1 || peroid >= 100000)
@@ -39,7 +39,7 @@ namespace TA
 		MA_Param(const std::vector<T>& serial
 			, int peroid = 30
 			, TA_MAType type = TA_MAType::TA_MAType_SMA)
-			: PeroidParam<T>(0, serial.size() - 1, peroid, serial)
+			: PeroidParam<T>(0, serial.size() - 1, serial, peroid)
 			, type_(type)
 		{
 			
@@ -50,10 +50,6 @@ namespace TA
 			return type_;
 		}
 
-		int peroid() const
-		{
-			return peroid_;
-		}
 	private:
 		TA_MAType	type_;
 	};

@@ -26,7 +26,7 @@ namespace TA
 			, const std::vector<T>& low
 			, const std::vector<T>& close
 			, int peroid = 2)
-			: PeroidParam<T>(0, high.size() - 1, peroid, 3, &high, &low, &close)
+			: PeroidParam<T>(0, high.size() - 1, peroid, &high, &low, &close, nullptr)
 		{
 			if (high.size() != low.size() || low.size() != close.size())
 			{
@@ -40,7 +40,7 @@ namespace TA
 			, int start
 			, int end
 			, int peroid = 2)
-			: PeroidParam<T>(start, end, peroid, 3, &high, &low, &close)
+			: PeroidParam<T>(start, end, peroid, &high, &low, &close, nullptr)
 		{
 			if (high.size() != low.size() || low.size() != close.size())
 			{
