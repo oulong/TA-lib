@@ -53,8 +53,7 @@ namespace TA
 			va_start(arg_ptr, out_nb_element);
 			for (int i = 0; i < N; i++)
 			{				
-				const std::shared_ptr<T>* const _arg = va_arg(arg_ptr, const std::shared_ptr<T>* const);		
-
+				const std::shared_ptr<T>* const _arg = va_arg(arg_ptr, const std::shared_ptr<T>* const);
 				for (int k = 0; k++ < out_nb_element;)
 				{
 					out_serial_[i].push_back((*_arg).get()[i]);

@@ -25,8 +25,8 @@ namespace TA
 		MA_Param(const std::vector<T>& serial
 			, int start
 			, int end
-			, int peroid = 30
-			, TA_MAType type = TA_MAType::TA_MAType_SMA)
+			, int peroid = TA_INTEGER_DEFAULT
+			, TA_MAType type = TA_MAType(TA_INTEGER_DEFAULT))
 			: PeroidParam<T>(start, end, serial, peroid)
 			, type_(type)
 		{
@@ -37,8 +37,8 @@ namespace TA
 		}
 
 		MA_Param(const std::vector<T>& serial
-			, int peroid = 30
-			, TA_MAType type = TA_MAType::TA_MAType_SMA)
+			, int peroid = TA_INTEGER_DEFAULT
+			, TA_MAType type = TA_MAType(TA_INTEGER_DEFAULT))
 			: PeroidParam<T>(0, serial.size() - 1, serial, peroid)
 			, type_(type)
 		{

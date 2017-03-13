@@ -25,7 +25,7 @@ namespace TA
 		DX_Param(const std::vector<T>& high
 			, const std::vector<T>& low
 			, const std::vector<T>& close
-			, int peroid = 2)
+			, int peroid = TA_INTEGER_DEFAULT)
 			: PeroidParam<T>(0, high.size() - 1, peroid, &high, &low, &close, nullptr)
 		{
 			if (high.size() != low.size() || low.size() != close.size())
@@ -39,7 +39,7 @@ namespace TA
 			, const std::vector<T>& close
 			, int start
 			, int end
-			, int peroid = 2)
+			, int peroid = TA_INTEGER_DEFAULT)
 			: PeroidParam<T>(start, end, peroid, &high, &low, &close, nullptr)
 		{
 			if (high.size() != low.size() || low.size() != close.size())

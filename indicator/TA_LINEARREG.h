@@ -31,7 +31,7 @@ namespace TA
 		LINEARREG_Param(const std::vector<T>& serial
 			, int start
 			, int end
-			, int peroid = 14)
+			, int peroid = TA_INTEGER_DEFAULT)
 			: PeroidParam<T>(start, end, serial, peroid)
 		{
 
