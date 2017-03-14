@@ -52,7 +52,6 @@ namespace TA
 			text.append(_msg);
 		}
 
-		//return text;
 		return std::move(text);
 	}
 

@@ -51,6 +51,9 @@
     <ClInclude Include="indicator\TA_MACD.h">
       <Filter>Header Files\indicator</Filter>
     </ClInclude>
+    <ClInclude Include="base\TA_Util.h">
+      <Filter>Header Files\base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TA_Lib.cpp">
@@ -58,6 +61,9 @@
     </ClCompile>
     <ClCompile Include="base\TA_Exception.cpp">
       <Filter>Source Files\base</Filter>
+    </ClCompile>
+    <ClCompile Include="TA_Abstract_Param.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

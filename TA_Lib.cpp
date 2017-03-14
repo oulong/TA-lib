@@ -2,12 +2,6 @@
 
 namespace TA
 {
-	template <typename T>
-	std::shared_ptr<T> make_shared_array(size_t size)
-	{
-		return std::move(std::shared_ptr<T>(new T[size], std::default_delete<T[]>()));
-	}	
-
 	Lib::Lib()
 	{
 		TA_Initialize();
@@ -58,6 +52,220 @@ namespace TA
 		}
 		
 		throw CallTaImplException("unknown_error", ret_code);
+	}
+
+	AbsOuts Lib::CallFunc(const std::string& name, int start_idx, int end_idx, const AbsBaseParam* const args, ...)
+	{
+		va_list args_ptr;
+		va_start(args_ptr, end_idx);
+
+		std::vector<const AbsBaseParam* const> v_args;
+		for (int i = 0;; ++i)
+		{
+			const AbsBaseParam* const  _arg = va_arg(args_ptr, const AbsBaseParam* const);
+			if (_arg == nullptr)
+			{
+				break;
+			}
+			v_args.push_back(_arg);
+		}
+
+		va_end(args_ptr);
+
+		return _call_func(name.c_str(), start_idx, end_idx, v_args);
+	}
+
+	AbsOuts Lib::_call_func(const char* name
+		, int start_idx
+		, int end_idx
+		, const std::vector<const AbsBaseParam* const>& v_args)
+	{
+		TA_ParamHolder *params = nullptr;
+		try
+		{
+			TA_RetCode retCode = TA_SUCCESS;
+			const TA_FuncHandle *handle = nullptr;
+			const TA_FuncInfo *theInfo = nullptr;
+
+			retCode = TA_GetFuncHandle(name, &handle);
+			_handle_error(retCode);
+
+			retCode = TA_GetFuncInfo(handle, &theInfo);
+			_handle_error(retCode);
+			
+			retCode = TA_ParamHolderAlloc(handle, &params);
+			_handle_error(retCode);
+
+			//todo logic;
+			int s_params_idx = 0;
+			_full_input_params(params, theInfo, s_params_idx, v_args);
+
+			s_params_idx += theInfo->nbInput;
+			_full_opt_input_params(params, theInfo, s_params_idx, v_args);
+
+			s_params_idx += theInfo->nbOptInput;
+
+			AbsOuts outs(end_idx - start_idx + 1);
+			_full_output_params(params, theInfo, v_args, outs);
+
+			retCode = TA_CallFunc(params, start_idx, end_idx, outs.begin(), outs.nb_element());
+			_handle_error(retCode);
+
+			//ret outs
+			TA_ParamHolderFree(params);
+
+			return std::move(outs);
+		}
+		catch (const Exception& e)
+		{
+			if (params)
+			{
+				TA_ParamHolderFree(params);
+			}
+			
+			e.rethrow();
+		}		
+
+		//to eliminate compile warning!
+		throw LogicException("");
+	}
+
+	void Lib::_full_input_params(TA_ParamHolder *params
+		, const TA_FuncInfo *the_info
+		, int s_params_idx
+		, const std::vector<const AbsBaseParam* const>& v_args)
+	{
+		TA_RetCode retCode = TA_SUCCESS;
+		const TA_InputParameterInfo *paramInfo = nullptr;		
+		for (int i = 0; i < (int)the_info->nbInput; i++, s_params_idx++)
+		{
+			if ((int)v_args.size() <= s_params_idx)
+			{
+				throw ParamsException("Input params not enough", " In index: " + std::to_string(i));
+			}
+
+			retCode = TA_GetInputParameterInfo(the_info->handle, s_params_idx, &paramInfo);
+			_handle_error(retCode);
+			switch (paramInfo->type)
+			{
+			case TA_Input_Price:
+			{
+				const AbsInputParam<double>* const _ptr = dynamic_cast<const AbsInputParam<double>* const>(v_args[s_params_idx]);
+				if (nullptr == _ptr)
+				{
+					throw ParamsException("Need input real", " In index: " + std::to_string(i));
+				}
+
+				if (_ptr->serial_param_size() != 6)
+				{
+					throw ParamsException("Price serial size error");
+				}
+
+				retCode = TA_SetInputParamPricePtr(params, i
+					, _ptr->buffer(0)
+					, _ptr->buffer(1)
+					, _ptr->buffer(2)
+					, _ptr->buffer(3)
+					, _ptr->buffer(4)
+					, _ptr->buffer(5));
+
+				_handle_error(retCode);
+			}
+			break;
+			case TA_Input_Real:
+			{
+				const AbsInputParam<double>* const _ptr = dynamic_cast<const AbsInputParam<double>* const>(v_args[s_params_idx]);
+				if (nullptr == _ptr)
+				{
+					throw ParamsException("Need input real", " In index: " + std::to_string(i));
+				}
+
+				retCode = TA_SetInputParamRealPtr(params, i, _ptr->buffer());
+				_handle_error(retCode);
+			}
+			break;
+			case TA_Input_Integer:
+			{
+				const AbsInputParam<int>* const _ptr = dynamic_cast<const AbsInputParam<int>* const>(v_args[s_params_idx]);
+				if (nullptr == _ptr)
+				{
+					throw ParamsException("Need input integer", " In index: " + std::to_string(i));
+				}
+
+				retCode = TA_SetInputParamIntegerPtr(params, i, _ptr->buffer());
+				_handle_error(retCode);
+			}
+			break;
+			}
+		}
+	}
+
+	void Lib::_full_opt_input_params(TA_ParamHolder *params, const TA_FuncInfo *the_info, int s_params_idx, const std::vector<const AbsBaseParam* const>& v_args)
+	{
+		TA_RetCode retCode = TA_SUCCESS;
+		const TA_OptInputParameterInfo *optParamInfo = nullptr;
+		for (int i = 0; i < (int)the_info->nbOptInput; i++, s_params_idx++)
+		{
+			retCode = TA_GetOptInputParameterInfo(the_info->handle, i, &optParamInfo);
+			_handle_error(retCode);
+			switch (optParamInfo->type)
+			{
+			case TA_OptInput_RealRange:
+			case TA_OptInput_RealList:
+			{
+				const AbsOptInputParam<double>* const _ptr = dynamic_cast<const AbsOptInputParam<double>* const>(v_args[s_params_idx]);
+				if (nullptr == _ptr)
+				{
+					throw ParamsException("Opt need input real", " in index: " + std::to_string(i));
+				}
+				retCode = TA_SetOptInputParamReal(params, i, _ptr->data());
+				_handle_error(retCode);
+			}
+			break;
+			case TA_OptInput_IntegerRange:
+			case TA_OptInput_IntegerList:
+			{
+				const AbsOptInputParam<int>* const _ptr = dynamic_cast<const AbsOptInputParam<int>* const>(v_args[s_params_idx]);
+				if (nullptr == _ptr)
+				{
+					throw ParamsException("Opt need input integer", " in index: " + std::to_string(i));
+				}
+				retCode = TA_SetOptInputParamInteger(params, i, _ptr->data());
+				_handle_error(retCode);
+			}
+			break;
+			}
+		}
+	}
+
+	void Lib::_full_output_params(TA_ParamHolder *params
+		, const TA_FuncInfo *the_info
+		, const std::vector<const AbsBaseParam* const>& v_args
+		, AbsOuts& outs)
+	{
+		TA_RetCode retCode = TA_SUCCESS;
+		const TA_OutputParameterInfo *outParamInfo = nullptr;
+		
+		for (int i = 0; i < (int)the_info->nbOutput; i++)
+		{
+			retCode = TA_GetOutputParameterInfo(the_info->handle, i, &outParamInfo);
+			_handle_error(retCode);
+			switch (outParamInfo->type)
+			{
+			case TA_Output_Real:
+			{				
+				retCode = TA_SetOutputParamRealPtr(params, i, outs.new_alloc_real());
+				_handle_error(retCode);
+			}
+			break;
+			case TA_Output_Integer:
+			{				
+				retCode = TA_SetOutputParamIntegerPtr(params, i, outs.new_alloc_int());
+				_handle_error(retCode);
+			}
+			break;
+			}
+		}
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////
