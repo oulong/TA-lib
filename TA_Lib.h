@@ -44,8 +44,7 @@ namespace TA
 
 		/*TA_MACD - Moving Average Convergence / Divergence*/
 		Outs<double, 3> MACD(const MACD_Param<float>& param);
-		Outs<double, 3> MACD(const MACD_Param<double>& param);
-		
+		Outs<double, 3> MACD(const MACD_Param<double>& param);		
 
 	private:
 		void _handle_error(TA_RetCode code) const;	

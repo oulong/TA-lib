@@ -1,5 +1,6 @@
 #include "TA_Abstract_Param.h"
 #include "base/TA_Util.h"
+#include "base/TA_Exception.h"
 
 namespace TA
 {
@@ -34,8 +35,38 @@ namespace TA
 	{
 		std::shared_ptr<double> serial = make_shared_array<double>(size_);
 		v_double_serial_.push_back(serial);
-		v_value_map_.push_back(std::make_pair<int, int>(0, v_double_serial_.size() - 1));
+		v_value_map_.push_back(std::make_pair<int, int>(1, v_double_serial_.size() - 1));
 
 		return v_double_serial_.rbegin()->get();
+	}
+
+	int AbsOuts::get_int(int idx, int serial_no) const
+	{
+		if (serial_no >= (int)v_value_map_.size())
+		{
+			throw RangeException("out idx");
+		}
+				
+		if (v_value_map_[serial_no].first != 0)
+		{
+			throw ParamsException("type[int] error");
+		}
+
+		return v_int_serial_[v_value_map_[serial_no].second].get()[idx];
+	}
+
+	double AbsOuts::get_real(int idx, int serial_no) const
+	{
+		if (serial_no >= (int)v_value_map_.size())
+		{
+			throw RangeException("out idx");
+		}
+
+		if (v_value_map_[serial_no].first != 1)
+		{
+			throw ParamsException("type[double] error");
+		}
+
+		return v_double_serial_[v_value_map_[serial_no].second].get()[idx];
 	}
 }

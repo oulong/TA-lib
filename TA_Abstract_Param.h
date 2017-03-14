@@ -67,8 +67,19 @@ namespace TA
 		AbsOuts(int size);		
 
 		//todo realize
-		//AbsOuts(AbsOuts&& ref) 
+		//AbsOuts(AbsOuts&& ref) 		
+		
+		int*	new_alloc_int();
+		double* new_alloc_real();
 
+		int begin() const
+		{
+			return out_begin_;
+		}
+		
+		int get_int(int idx, int serial_no = 0) const;
+		double get_real(int idx, int serial_no = 0) const;
+	private:
 		int* begin()
 		{
 			return &out_begin_;
@@ -78,9 +89,6 @@ namespace TA
 		{
 			return &out_nb_element_;
 		}
-		
-		int*	new_alloc_int();
-		double* new_alloc_real();
 	private:
 		int					idx_;
 		int					size_;
@@ -89,6 +97,8 @@ namespace TA
 		std::vector<std::shared_ptr<int>>    v_int_serial_;
 		std::vector<std::shared_ptr<double>> v_double_serial_;
 		std::vector<std::pair<int, int>>	 v_value_map_;
+
+		friend class Lib;
 	};
 }
 
