@@ -12,13 +12,13 @@ namespace TA
 		Out(int out_beg, int out_nb_element, const std::shared_ptr<T>& serial)
 			: out_beg_(out_beg)
 		{
-			for (int i = 0; i++ < out_nb_element;)
+			for (int i = 0; i < out_nb_element; i++)
 			{
 				out_serial_.push_back(serial.get()[i]);
 			}
 		}
 
-		int size() const
+		int nb_elements() const
 		{
 			return out_serial_.size();
 		}
