@@ -91,11 +91,13 @@
     <ClInclude Include="TA_Lib.h" />
     <ClInclude Include="TA_Out.h" />
     <ClInclude Include="TA_Param.h" />
+    <ClInclude Include="test\TA_Test.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="base\TA_Exception.cpp" />
     <ClCompile Include="TA_Abstract_Param.cpp" />
     <ClCompile Include="TA_Lib.cpp" />
+    <ClCompile Include="test\TA_Test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TA_Lib.inl" />

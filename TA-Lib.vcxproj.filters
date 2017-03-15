@@ -22,6 +22,12 @@
     <Filter Include="Header Files\indicator">
       <UniqueIdentifier>{e7446a62-4453-4f64-b7d2-b3ab1f1367f4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\test">
+      <UniqueIdentifier>{60f41456-579c-495b-b402-f9a529af59ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\test">
+      <UniqueIdentifier>{e4306b41-3f09-4c9f-b6f2-2424ed5d9291}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TA_Lib.h">
@@ -54,6 +60,9 @@
     <ClInclude Include="base\TA_Util.h">
       <Filter>Header Files\base</Filter>
     </ClInclude>
+    <ClInclude Include="test\TA_Test.h">
+      <Filter>Header Files\test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TA_Lib.cpp">
@@ -64,6 +73,9 @@
     </ClCompile>
     <ClCompile Include="TA_Abstract_Param.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="test\TA_Test.cpp">
+      <Filter>Source Files\test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
