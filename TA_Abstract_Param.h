@@ -60,46 +60,106 @@ namespace TA
 		T	data_;
 	};
 
-	
-	class AbsOuts
+	template <typename T>
+	class AbsOut
 	{
 	public:
-		AbsOuts(int size);		
+		AbsOut(int buff_size) : buff_size_(buff_size)
+		{
+		}
 
-		//todo realize
-		//AbsOuts(AbsOuts&& ref) 		
-		
-		int*	new_alloc_int();
-		double* new_alloc_real();
+		// todo realize
+		// AbsOut(AbsOut&& ref) 	
+
+		T* new_alloc()
+		{
+			std::shared_ptr<T> serial = make_shared_array<T>(buff_size_);
+			v_serial_.push_back(serial);			
+
+			return v_serial_.rbegin()->get();
+		}
+
+		const T&  serial(int idx, int serial_no = 0) const
+		{
+			if (serial_no < 0 || serial_no >= (int)v_serial_.size())
+			{
+				throw RangeException("serial idx out");
+			}
+
+			return v_serial_[serial_no].get()[idx];
+		}
 
 		int begin() const
 		{
 			return out_begin_;
 		}
-		
-		int get_int(int idx, int serial_no = 0) const;
-		double get_real(int idx, int serial_no = 0) const;
+
+		int nb_elements() const
+		{
+			return out_nb_element_;
+		}
+
 	private:
-		int* begin()
+		int* begin_ptr()
 		{
 			return &out_begin_;
 		}
 
-		int* nb_element()
+		int* nb_element_ptr()
 		{
 			return &out_nb_element_;
 		}
 	private:
-		int					idx_;
-		int					size_;
+		int buff_size_;
 		int					out_begin_;
-		int					out_nb_element_;		
-		std::vector<std::shared_ptr<int>>    v_int_serial_;
-		std::vector<std::shared_ptr<double>> v_double_serial_;
-		std::vector<std::pair<int, int>>	 v_value_map_;
+		int					out_nb_element_;
+		std::vector<std::shared_ptr<T>>    v_serial_;
 
 		friend class Lib;
 	};
+
+	
+	//class AbsOuts
+	//{
+	//public:
+	//	AbsOuts(int size);		
+
+	//	//todo realize
+	//	//AbsOuts(AbsOuts&& ref) 		
+	//	
+	//	int*	new_alloc_int();
+	//	double* new_alloc_real();
+
+	//	int begin() const
+	//	{
+	//		return out_begin_;
+	//	}
+
+
+	//	
+	//	int get_int(int idx, int serial_no = 0) const;
+	//	double get_real(int idx, int serial_no = 0) const;
+	//private:
+	//	int* begin()
+	//	{
+	//		return &out_begin_;
+	//	}
+
+	//	int* nb_element()
+	//	{
+	//		return &out_nb_element_;
+	//	}
+	//private:
+	//	int					idx_;
+	//	int					size_;
+	//	int					out_begin_;
+	//	int					out_nb_element_;		
+	//	std::vector<std::shared_ptr<int>>    v_int_serial_;
+	//	std::vector<std::shared_ptr<double>> v_double_serial_;
+	//	std::vector<std::pair<int, int>>	 v_value_map_;
+
+	//	friend class Lib;
+	//};
 }
 
 #endif

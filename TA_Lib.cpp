@@ -54,82 +54,6 @@ namespace TA
 		throw CallTaImplException("unknown_error", ret_code);
 	}
 
-	AbsOuts Lib::CallFunc(const std::string& name, int start_idx, int end_idx, const AbsBaseParam* const args, ...)
-	{
-		va_list args_ptr;
-		va_start(args_ptr, end_idx);
-
-		std::vector<const AbsBaseParam* const> v_args;
-		for (int i = 0;; ++i)
-		{
-			const AbsBaseParam* const  _arg = va_arg(args_ptr, const AbsBaseParam* const);
-			if (_arg == nullptr)
-			{
-				break;
-			}
-			v_args.push_back(_arg);
-		}
-
-		va_end(args_ptr);
-
-		return _call_func(name.c_str(), start_idx, end_idx, v_args);
-	}
-
-	AbsOuts Lib::_call_func(const char* name
-		, int start_idx
-		, int end_idx
-		, const std::vector<const AbsBaseParam* const>& v_args)
-	{
-		TA_ParamHolder *params = nullptr;
-		try
-		{
-			TA_RetCode retCode = TA_SUCCESS;
-			const TA_FuncHandle *handle = nullptr;
-			const TA_FuncInfo *theInfo = nullptr;
-
-			retCode = TA_GetFuncHandle(name, &handle);
-			_handle_error(retCode);
-
-			retCode = TA_GetFuncInfo(handle, &theInfo);
-			_handle_error(retCode);
-			
-			retCode = TA_ParamHolderAlloc(handle, &params);
-			_handle_error(retCode);
-
-			//todo logic;
-			int s_params_idx = 0;
-			_full_input_params(params, theInfo, s_params_idx, v_args);
-
-			s_params_idx += theInfo->nbInput;
-			_full_opt_input_params(params, theInfo, s_params_idx, v_args);
-
-			s_params_idx += theInfo->nbOptInput;
-
-			AbsOuts outs(end_idx - start_idx + 1);
-			_full_output_params(params, theInfo, v_args, outs);
-
-			retCode = TA_CallFunc(params, start_idx, end_idx, outs.begin(), outs.nb_element());
-			_handle_error(retCode);
-
-			//ret outs
-			TA_ParamHolderFree(params);
-
-			return std::move(outs);
-		}
-		catch (const Exception& e)
-		{
-			if (params)
-			{
-				TA_ParamHolderFree(params);
-			}
-			
-			e.rethrow();
-		}		
-
-		//to eliminate compile warning!
-		throw LogicException("");
-	}
-
 	void Lib::_full_input_params(TA_ParamHolder *params
 		, const TA_FuncInfo *the_info
 		, int s_params_idx
@@ -238,14 +162,13 @@ namespace TA
 		}
 	}
 
-	void Lib::_full_output_params(TA_ParamHolder *params
-		, const TA_FuncInfo *the_info
-		, const std::vector<const AbsBaseParam* const>& v_args
-		, AbsOuts& outs)
+	
+	template<>
+	void Lib::_full_output_params<int>(TA_ParamHolder *params, const TA_FuncInfo *the_info, const std::vector<const AbsBaseParam* const>& v_args, AbsOut<int>& out)
 	{
 		TA_RetCode retCode = TA_SUCCESS;
 		const TA_OutputParameterInfo *outParamInfo = nullptr;
-		
+
 		for (int i = 0; i < (int)the_info->nbOutput; i++)
 		{
 			retCode = TA_GetOutputParameterInfo(the_info->handle, i, &outParamInfo);
@@ -253,15 +176,41 @@ namespace TA
 			switch (outParamInfo->type)
 			{
 			case TA_Output_Real:
-			{				
-				retCode = TA_SetOutputParamRealPtr(params, i, outs.new_alloc_real());
+			{
+				throw ParamsException("Only support one type of integer.", "template must be integer");
+			}
+			break;
+			case TA_Output_Integer:
+			{
+				retCode = TA_SetOutputParamIntegerPtr(params, i, out.new_alloc());
+				_handle_error(retCode);
+			}
+			break;
+			}
+		}
+	}
+	
+	template<>
+	void Lib::_full_output_params(TA_ParamHolder *params, const TA_FuncInfo *the_info, const std::vector<const AbsBaseParam* const>& v_args, AbsOut<double>& out)
+	{
+		TA_RetCode retCode = TA_SUCCESS;
+		const TA_OutputParameterInfo *outParamInfo = nullptr;
+
+		for (int i = 0; i < (int)the_info->nbOutput; i++)
+		{
+			retCode = TA_GetOutputParameterInfo(the_info->handle, i, &outParamInfo);
+			_handle_error(retCode);
+			switch (outParamInfo->type)
+			{
+			case TA_Output_Real:
+			{
+				retCode = TA_SetOutputParamRealPtr(params, i, out.new_alloc());
 				_handle_error(retCode);
 			}
 			break;
 			case TA_Output_Integer:
-			{				
-				retCode = TA_SetOutputParamIntegerPtr(params, i, outs.new_alloc_int());
-				_handle_error(retCode);
+			{
+				throw ParamsException("Only support one type of real.", "template must be real");
 			}
 			break;
 			}
