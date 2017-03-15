@@ -97,6 +97,9 @@
     <ClCompile Include="TA_Abstract_Param.cpp" />
     <ClCompile Include="TA_Lib.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="TA_Lib.inl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
