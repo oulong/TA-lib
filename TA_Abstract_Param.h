@@ -86,7 +86,12 @@ namespace TA
 				throw RangeException("serial idx out");
 			}
 
-			return v_serial_[serial_no].get()[idx];
+			if (idx < out_begin_)
+			{
+				throw RangeException("[] idx out");
+			}
+
+			return v_serial_[serial_no].get()[idx - out_begin_];
 		}
 
 		int begin() const
